@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -21,17 +24,19 @@ namespace JungleTimerHax
         public static Dictionary<String, Single> jungleRespawns = new Dictionary<String, Single>();
         public static String Key;
         public static String GameId;
-        public static String Region;
+        public static String PlatformId;
+        public static String RegionTag;
+        public static String SpecUrl;
         public static Single TimeOffset = 0;
         private static void Main(string[] args)
         {
+            GetRegionInfo();
+            GetSpecInfo();
             Config = new Menu("JungleTimerHax", "JungleTimerHax", true);
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
-           
+            Game.OnGameProcessPacket += Game_OnGameProcessPacket;           
         }
-
         static void Game_OnGameProcessPacket(GamePacketEventArgs args)
         {
             if (args.PacketData[0] == 0xC1 || args.PacketData[0] == 0xC2)
@@ -43,20 +48,34 @@ namespace JungleTimerHax
                 }).Start();
             }
         }
-
-        static void GetTimers()
+        static void GetRegionInfo()
         {
-            String GameInfo = new WebClient().DownloadString(BaseUrl + "NA" + UrlPartial + ObjectManager.Player.Name);
+            Process proc = Process.GetProcesses().First(p => p.ProcessName.Contains("League of Legends"));
+            String propFile = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(proc.Modules[0].FileName))))));
+            propFile += @"\projects\lol_air_client\releases\";
+            DirectoryInfo di = new DirectoryInfo(propFile).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First();
+            propFile = di.FullName + @"\deploy\lol.properties";
+            propFile = File.ReadAllText(propFile);
+            SpecUrl = new Regex("featuredGamesURL=(.+)featured").Match(propFile).Groups[1].Value;
+            RegionTag = new Regex("regionTag=(.+)\r").Match(propFile).Groups[1].Value;
+            SpectatorService.SpectatorDownloader.specHtml = SpecUrl;
+            Game.PrintChat(SpecUrl);
+        }
+        static void GetSpecInfo()
+        {
+            String GameInfo = new WebClient().DownloadString(BaseUrl + RegionTag + UrlPartial + ObjectManager.Player.Name);
             GameInfo = GameInfo.Substring(GameInfo.IndexOf(SearchString) + SearchString.Length);
             GameInfo = GameInfo.Substring(GameInfo.IndexOf(" ") + 1);
             Key = GameInfo.Substring(0, GameInfo.IndexOf(" "));
             GameInfo = GameInfo.Substring(GameInfo.IndexOf(" ") + 1);
             GameId = GameInfo.Substring(0, GameInfo.IndexOf(" "));
             GameInfo = GameInfo.Substring(GameInfo.IndexOf(" ") + 1);
-            Region = GameInfo.Substring(0, GameInfo.IndexOf(" "));
-
+            PlatformId = GameInfo.Substring(0, GameInfo.IndexOf(" "));
+        }
+        static void GetTimers()
+        {
             List<Packets.Packet> packets = new List<Packets.Packet>();
-            List<Byte[]> fullGameBytes = SpectatorService.SpectatorDownloader.DownloadGameFiles(GameId, Region, Key, "Chunk");
+            List<Byte[]> fullGameBytes = SpectatorService.SpectatorDownloader.DownloadGameFiles(GameId, PlatformId, Key, "Chunk");
             foreach (Byte[] chunkBytes in fullGameBytes)
             {
                 packets.AddRange(SpectatorService.SpectatorDecoder.DecodeBytes(chunkBytes));

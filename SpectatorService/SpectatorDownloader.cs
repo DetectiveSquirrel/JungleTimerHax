@@ -13,11 +13,7 @@ namespace JungleTimerHax.SpectatorService
 {
     static class SpectatorDownloader
     {
-        static Dictionary<String, String> spectatorHtml = new Dictionary<string, string>()
-        {
-            { "NA", "http://spectator.na.lol.riotgames.com:80/observer-mode/rest/"},
-        };
-        static String specHtml = "http://spectator.na.lol.riotgames.com:80/observer-mode/rest/";
+        public static String specHtml;// = "http://spectator.na.lol.riotgames.com:80/observer-mode/rest/";
 
         public static void DownloadAllGameInfo(String gameId, String platformId, String encryptionKey)
         {
