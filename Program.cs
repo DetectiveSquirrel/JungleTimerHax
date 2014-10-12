@@ -149,7 +149,7 @@ namespace JungleTimerHax
             foreach (KeyValuePair<String,Single> creep in jungleRespawns)
             {
                 Vector2 pos = Drawing.WorldToMinimap(junglePos[creep.Key]);
-                TimeSpan time = TimeSpan.FromSeconds(creep.Value - Game.Time + TimeOffset);
+                TimeSpan time = TimeSpan.FromSeconds(creep.Value - Game.Time + TimeOffset + 1);
                 if (time.TotalSeconds > 0)
                 {
                     string display = string.Format("{0}:{1:D2}", time.Minutes, time.Seconds);
