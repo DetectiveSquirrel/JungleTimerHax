@@ -13,7 +13,7 @@ namespace JungleTimerHax.SpectatorService
 {
     static class SpectatorDownloader
     {
-        public static String specHtml;// = "http://spectator.na.lol.riotgames.com:80/observer-mode/rest/";
+        public static String specHtml;
 
         public static void DownloadAllGameInfo(String gameId, String platformId, String encryptionKey)
         {

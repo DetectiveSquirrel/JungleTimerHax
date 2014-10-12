@@ -30,12 +30,15 @@ namespace JungleTimerHax
         public static Single TimeOffset = 0;
         private static void Main(string[] args)
         {
-            GetRegionInfo();
-            GetSpecInfo();
-            Config = new Menu("JungleTimerHax", "JungleTimerHax", true);
-            Config.AddToMainMenu();
-            Drawing.OnDraw += Drawing_OnDraw;
-            Game.OnGameProcessPacket += Game_OnGameProcessPacket;           
+            new System.Threading.Thread(() =>
+            {
+                GetRegionInfo();
+                GetSpecInfo();
+                Config = new Menu("JungleTimerHax", "JungleTimerHax", true);
+                Config.AddToMainMenu();
+                Drawing.OnDraw += Drawing_OnDraw;
+                Game.OnGameProcessPacket += Game_OnGameProcessPacket; 
+            }).Start();          
         }
         static void Game_OnGameProcessPacket(GamePacketEventArgs args)
         {
@@ -59,7 +62,6 @@ namespace JungleTimerHax
             SpecUrl = new Regex("featuredGamesURL=(.+)featured").Match(propFile).Groups[1].Value;
             RegionTag = new Regex("regionTag=(.+)\r").Match(propFile).Groups[1].Value;
             SpectatorService.SpectatorDownloader.specHtml = SpecUrl;
-            Game.PrintChat(SpecUrl);
         }
         static void GetSpecInfo()
         {
