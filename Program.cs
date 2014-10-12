@@ -22,15 +22,29 @@ namespace JungleTimerHax
         public static String Key;
         public static String GameId;
         public static String Region;
+        public static Single TimeOffset = 0;
         private static void Main(string[] args)
         {
             Config = new Menu("JungleTimerHax", "JungleTimerHax", true);
-            var GetTimers = Config.AddItem(new MenuItem("JungleTimerHax", "Update!").SetValue(new KeyBind("8".ToCharArray()[0], KeyBindType.Toggle)));
-            GetTimers.ValueChanged += GetTimers_ValueChanged;
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
+            Game.OnGameProcessPacket += Game_OnGameProcessPacket;
+           
         }
-        static void GetTimers_ValueChanged(object sender, OnValueChangeEventArgs e)
+
+        static void Game_OnGameProcessPacket(GamePacketEventArgs args)
+        {
+            if (args.PacketData[0] == 0xC1 || args.PacketData[0] == 0xC2)
+            {
+                TimeOffset = Game.Time - BitConverter.ToSingle(args.PacketData, 5);
+                new System.Threading.Thread(() =>
+                {
+                    GetTimers();
+                }).Start();
+            }
+        }
+
+        static void GetTimers()
         {
             String GameInfo = new WebClient().DownloadString(BaseUrl + "NA" + UrlPartial + ObjectManager.Player.Name);
             GameInfo = GameInfo.Substring(GameInfo.IndexOf(SearchString) + SearchString.Length);
@@ -77,13 +91,11 @@ namespace JungleTimerHax
                                 {
                                     jungleRespawns["LeftBlue"] = xpPacket.time + 300;
                                     junglePos["LeftBlue"] = junglePos2[jungleCreep];
-                                    Console.WriteLine("purple side blue buff respawn at " + (xpPacket.time + 300));
                                 }
                                 else if (camp.Equals("4"))
                                 {
                                     jungleRespawns["BotRed"] = xpPacket.time + 300;
                                     junglePos["BotRed"] = junglePos2[jungleCreep];
-                                    Console.WriteLine("purple side red buff respawn at " + (xpPacket.time + 300));
                                 }
                                 else if (camp.Equals("7"))
                                 {
@@ -116,9 +128,12 @@ namespace JungleTimerHax
             foreach (KeyValuePair<String,Single> creep in jungleRespawns)
             {
                 Vector2 pos = Drawing.WorldToMinimap(junglePos[creep.Key]);
-                TimeSpan time = TimeSpan.FromSeconds(Game.ClockTime);// - Game.Time);
-                string display = string.Format("{0}:{1:D2}", time.Minutes, time.Seconds);
-                Drawing.DrawText(pos.X - display.Length * 3, pos.Y - 5, System.Drawing.Color.Yellow, display);
+                TimeSpan time = TimeSpan.FromSeconds(creep.Value - Game.Time + TimeOffset);
+                if (time.TotalSeconds > 0)
+                {
+                    string display = string.Format("{0}:{1:D2}", time.Minutes, time.Seconds);
+                    Drawing.DrawText(pos.X - display.Length * 3, pos.Y - 5, System.Drawing.Color.Yellow, display);
+                }
             }
         }
     }

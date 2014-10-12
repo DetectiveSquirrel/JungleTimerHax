@@ -56,14 +56,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\Users\atharazi\Downloads\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Users\Andy\Downloads\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\Users\atharazi\Downloads\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Users\Andy\Downloads\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\atharazi\Downloads\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Users\Andy\Downloads\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,53 +76,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Packets\AbilityLevel.cs" />
-    <Compile Include="Packets\AttentionPing.cs" />
-    <Compile Include="Packets\AutoAttack.cs" />
-    <Compile Include="Packets\BuyItem.cs" />
-    <Compile Include="Packets\ChampionNames.cs" />
-    <Compile Include="Packets\CharacterNames.cs" />
-    <Compile Include="Packets\CharStats.cs" />
-    <Compile Include="Packets\CreateEffect.cs" />
-    <Compile Include="Packets\Damage.cs" />
-    <Compile Include="Packets\DeathRecap.cs" />
-    <Compile Include="Packets\DeathTimer.cs" />
-    <Compile Include="Packets\DestroyProjectile.cs" />
-    <Compile Include="Packets\Emotion.cs" />
     <Compile Include="Packets\ExperienceGain.cs" />
-    <Compile Include="Packets\FogUpdate.cs" />
-    <Compile Include="Packets\GameId.cs" />
-    <Compile Include="Packets\GameTimerUpdate.cs" />
-    <Compile Include="Packets\Gold.cs" />
-    <Compile Include="Packets\HeroSpawn.cs" />
-    <Compile Include="Packets\InventoryUpdate.cs" />
-    <Compile Include="Packets\JungleCampSpawn.cs" />
     <Compile Include="Packets\JungleSpawn.cs" />
-    <Compile Include="Packets\KhazixEvo.cs" />
-    <Compile Include="Packets\LevelPropSpawn.cs" />
-    <Compile Include="Packets\LevelUp.cs" />
-    <Compile Include="Packets\MinionSpawn.cs" />
     <Compile Include="Packets\Packet.cs" />
-    <Compile Include="Packets\PingLoad.cs" />
-    <Compile Include="Packets\PlayAnimation.cs" />
-    <Compile Include="Packets\PlayerInfo.cs" />
-    <Compile Include="Packets\PlayerStats.cs" />
-    <Compile Include="Packets\SellItem.cs" />
-    <Compile Include="Packets\SetTarget.cs" />
-    <Compile Include="Packets\SpawnParticle.cs" />
-    <Compile Include="Packets\SpawnProjectile.cs" />
-    <Compile Include="Packets\SpellCast.cs" />
-    <Compile Include="Packets\SwapItems.cs" />
-    <Compile Include="Packets\Teleport.cs" />
-    <Compile Include="Packets\TurretSpawn.cs" />
-    <Compile Include="Packets\UnitSpawn.cs" />
-    <Compile Include="Packets\Unk64.cs" />
-    <Compile Include="Packets\Unk6B.cs" />
-    <Compile Include="Packets\Unk7C.cs" />
-    <Compile Include="Packets\UnkB0.cs" />
-    <Compile Include="Packets\Waypoints.cs" />
-    <Compile Include="Packets\ZedShadow.cs" />
-    <Compile Include="Packets\ZyraPassive.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
