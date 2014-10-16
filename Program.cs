@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -153,7 +153,12 @@ namespace JungleTimerHax
                 if (time.TotalSeconds > 0)
                 {
                     string display = string.Format("{0}:{1:D2}", time.Minutes, time.Seconds);
-                    Drawing.DrawText(pos.X - display.Length * 3, pos.Y - 5, System.Drawing.Color.Yellow, display);
+
+                    Drawing.DrawText(pos.X + 1 - display.Length*3, pos.Y - 4, System.Drawing.Color.Black, display);
+                    Drawing.DrawText(pos.X - 1 - display.Length*3, pos.Y - 6, System.Drawing.Color.Black, display);
+                    Drawing.DrawText(pos.X - 1 - display.Length*3, pos.Y - 4, System.Drawing.Color.Black, display);
+                    Drawing.DrawText(pos.X + 1 - display.Length*3, pos.Y - 6, System.Drawing.Color.Black, display);
+                    Drawing.DrawText(pos.X - display.Length*3, pos.Y - 5, System.Drawing.Color.Yellow, display);
                 }
             }
         }
