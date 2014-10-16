@@ -34,11 +34,11 @@ namespace JungleTimerHax
             {
                 GetRegionInfo();
                 GetSpecInfo();
-                Config = new Menu("JungleTimerHax", "JungleTimerHax", true);
-                Config.AddToMainMenu();
-                Drawing.OnDraw += Drawing_OnDraw;
-                Game.OnGameProcessPacket += Game_OnGameProcessPacket; 
-            }).Start();          
+            }).Start();
+            Config = new Menu("JungleTimerHax", "JungleTimerHax", true);
+            Config.AddToMainMenu();
+            Drawing.OnDraw += Drawing_OnDraw;
+            Game.OnGameProcessPacket += Game_OnGameProcessPacket;        
         }
         static void Game_OnGameProcessPacket(GamePacketEventArgs args)
         {
@@ -49,6 +49,23 @@ namespace JungleTimerHax
                 {
                     GetTimers();
                 }).Start();
+            }
+            else if (args.PacketData[0] == Packet.S2C.EmptyJungleCamp.Header)
+            {
+                Byte Camp = args.PacketData[9];
+                jungleRespawns[Camp.ToString()] = Game.Time - TimeOffset - 1 + 50;
+                if (Camp == 0x0C)
+                    jungleRespawns[Camp.ToString()] += 370;
+                else if (Camp == 0x06)
+                    jungleRespawns[Camp.ToString()] += 310;
+                else if (Camp == 0x1 || Camp == 0x4 || Camp == 0x8 || Camp == 0xB)
+                    jungleRespawns[Camp.ToString()] += 250;
+            }
+            else if (args.PacketData[0] == (byte)Packets.HeaderList.JungleCampSpawn)
+            {
+                Byte Camp = args.PacketData[21];
+                Vector3 pos = new Vector3(BitConverter.ToSingle(args.PacketData, 5), BitConverter.ToSingle(args.PacketData, 13), BitConverter.ToSingle(args.PacketData, 9));
+                junglePos[Camp.ToString()] = pos;
             }
         }
         static void GetRegionInfo()
@@ -108,35 +125,18 @@ namespace JungleTimerHax
                             });
                             if (allDead)
                             {
-                                if (camp.Equals("1"))
+                                junglePos[camp] = junglePos2[jungleCreep];
+                                if (camp.Equals("2") || camp.Equals("3") || camp.Equals("5") || camp.Equals("8") || camp.Equals("9") || camp.Equals("11") || camp.Equals("13") || camp.Equals("14"))
                                 {
-                                    jungleRespawns["LeftBlue"] = xpPacket.time + 300;
-                                    junglePos["LeftBlue"] = junglePos2[jungleCreep];
+
                                 }
-                                else if (camp.Equals("4"))
+                                else
                                 {
-                                    jungleRespawns["BotRed"] = xpPacket.time + 300;
-                                    junglePos["BotRed"] = junglePos2[jungleCreep];
-                                }
-                                else if (camp.Equals("7"))
-                                {
-                                    jungleRespawns["RightBlue"] = xpPacket.time + 300;
-                                    junglePos["RightBlue"] = junglePos2[jungleCreep];
-                                }
-                                else if (camp.Equals("10"))
-                                {
-                                    jungleRespawns["TopRed"] = xpPacket.time + 300;
-                                    junglePos["TopRed"] = junglePos2[jungleCreep];
-                                }
-                                else if (camp.Equals("6"))
-                                {
-                                    jungleRespawns["Dragon"] = xpPacket.time + 360;
-                                    junglePos["Dragon"] = junglePos2[jungleCreep];
-                                }
-                                else if (camp.Equals("12"))
-                                {
-                                    jungleRespawns["Baron"] = xpPacket.time + 420;
-                                    junglePos["Baron"] = junglePos2[jungleCreep];
+                                    jungleRespawns[camp] = xpPacket.time + 300;
+                                    if (camp.Equals("6"))
+                                        jungleRespawns[camp] += 60;
+                                    else if (camp.Equals("12"))
+                                        jungleRespawns[camp] += 120;
                                 }
                             }
                         }
